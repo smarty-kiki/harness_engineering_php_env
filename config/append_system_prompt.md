@@ -16,4 +16,10 @@ Redis 执行命令日志：/var/log/redis/redis-cli.log
 框架中的模块打印日志：/tmp/php_module.log  
 
 如果我说让你自己测试一下，你就通过访问对应功能的 URL 来测试，检查输出结果，如果报错了，就检查报错日志自己开始修复  
-如果你修复问题时修改到了 Nginx、MySQL、PHP-FPM、Redis 的配置文件，可以用 service 命令来重启重新加载配置文件，这个环境里是用的 mariadb 来代替的 MySQL  
+如果你修复问题时修改到了 Nginx、MySQL、PHP-FPM、Redis 的配置文件，可以用 service 命令来重启重新加载配置文件，这个环境里是用的 mariadb 来代替的 MySQL，如下示例：  
+service php8.4-fpm   restart  
+service nginx        restart  
+service mariadb      restart  
+service redis-server restart  
+service beanstalkd   restart  
+service supervisor   restart  
