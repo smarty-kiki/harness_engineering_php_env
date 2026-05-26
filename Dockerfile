@@ -1,6 +1,4 @@
-FROM debian:trixie
-
-COPY ./config/apt_source.list /etc/apt/sources.list
+FROM debian
 
 RUN apt-get update && \
     apt-get install apt-utils -y && \
@@ -37,7 +35,7 @@ RUN apt-get install python3-pip -y && \
     pip install mycli
 
 # Install Claude CLI
-RUN curl -fsSL https://制品.ksandbox.top/https://github.com/anthropics/claude-code/releases/latest/download/claude-linux-arm64 -o /usr/local/bin/claude && \
+RUN curl -fsSL https://github.com/anthropics/claude-code/releases/latest/download/claude-linux-arm64 -o /usr/local/bin/claude && \
     chmod +x /usr/local/bin/claude
 
 COPY ./shell/start.sh /bin/start
