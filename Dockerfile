@@ -6,7 +6,6 @@ RUN apt-get update && \
     apt-get install nginx -y && \
     apt-get install mariadb-server -y && \
     apt-get install redis-server -y && \
-    apt-get install mongodb -y && \
     apt-get install beanstalkd -y
 RUN apt-get install php8.4-fpm -y && \
     apt-get install php8.4-redis -y && \
@@ -47,13 +46,6 @@ COPY ./config/tmux.conf /root/.tmux.conf
 
 RUN mkdir -p /root/.tmuxinator
 COPY ./config/tmuxinator_init.yml /root/.tmuxinator/init.yml
-
-COPY ./config/nginx_config_xhgui /etc/nginx/sites-available/xhgui
-RUN ln -fs /etc/nginx/sites-available/xhgui /etc/nginx/sites-enabled/xhgui
-
-RUN git -C /var/www/ clone https://github.com/laynefyc/xhgui-branch.git && \
-    cd /var/www/xhgui-branch && \
-    php install.php
 
 COPY ./shell/config_init.sh /tmp/config_init.sh
 RUN /bin/bash /tmp/config_init.sh

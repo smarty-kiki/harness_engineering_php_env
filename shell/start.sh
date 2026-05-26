@@ -12,7 +12,6 @@ service mariadb      start > /dev/null &
 service redis-server start > /dev/null &
 service beanstalkd   start > /dev/null &
 service supervisor   start > /dev/null &
-service mongodb      start > /dev/null &
 
 wait
 
