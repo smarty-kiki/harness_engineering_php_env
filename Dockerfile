@@ -1,30 +1,67 @@
-# harness_engineering_php_env
-基于 Debian trixie 的 PHP 开发环境容器
+FROM debian:trixie
 
-### 环节说明
-这个开发环境中含有以下组件
- * nginx
- * mariadb-server
- * redis-server
- * mongodb
- * beanstalkd
- * php-fpm
- * phpunit
- * inotify-tools
- * supervisor
- * wget
- * git
- * composer
- * vim
- * tmux
- * pip
- * mycli
- * claude ( Anthropic CLI )
+COPY ./config/apt_source.list /etc/apt/sources.list
 
-### 使用方法：
+RUN apt-get update && \
+    apt-get install apt-utils -y && \
+    apt-get upgrade -y && \
+    apt-get install nginx -y && \
+    apt-get install mariadb-server -y && \
+    apt-get install redis-server -y && \
+    apt-get install mongodb -y && \
+    apt-get install beanstalkd -y
+RUN apt-get install php8.4-fpm -y && \
+    apt-get install php8.4-redis -y && \
+    apt-get install php8.4-curl -y && \
+    apt-get install php8.4-mysql -y && \
+    apt-get install php8.4-mongodb -y && \
+    apt-get install php8.4-xml -y && \
+    apt-get install php8.4-mbstring -y && \
+    apt-get install php8.4-yaml -y && \
+    apt-get install php8.4-dev -y && \
+    apt-get install php8.4-zip -y && \
+    apt-get install php8.4-gd -y
+RUN apt-get install phpunit -y && \
+    apt-get install inotify-tools -y && \
+    apt-get install wget -y && \
+    apt-get install gnupg -y && \
+    apt-get install zip -y && \
+    apt-get install git -y && \
+    apt-get install composer -y && \
+    apt-get install vim -y && \
+    apt-get install tmux -y && \
+    apt-get install tmuxinator -y && \
+    apt-get install supervisor -y && \
+    apt-get install toilet -y
+RUN apt-get install python3-pip -y && \
+    pip install mycli
 
-sudo docker run --rm -ti -p 80:80 -p 3306:3306 --name debian_php_dev_env \
-      -v {CODE_PATH}:/var/www/{PROJECT_NAME} \
-      -v {NGINX_SERVER_CONFIG_FILE}:/etc/nginx/sites-enabled/default \
-      -v {SUPERVISOR_CONFIG_FILE}:/etc/supervisor/conf.d/{CONFIG_NAME}.conf \
-      kikiyao/harness_engineering_php_env start
+# Install Claude CLI
+RUN curl -fsSL https://制品.ksandbox.top/https://github.com/anthropics/claude-code/releases/latest/download/claude-linux-arm64 -o /usr/local/bin/claude && \
+    chmod +x /usr/local/bin/claude
+
+COPY ./shell/start.sh /bin/start
+RUN chown root:root /bin/start && \
+    chmod +x /bin/start
+
+COPY ./config/bashrc /root/.bashrc
+COPY ./config/tmux.conf /root/.tmux.conf
+
+RUN mkdir -p /root/.tmuxinator
+COPY ./config/tmuxinator_init.yml /root/.tmuxinator/init.yml
+
+COPY ./config/nginx_config_xhgui /etc/nginx/sites-available/xhgui
+RUN ln -fs /etc/nginx/sites-available/xhgui /etc/nginx/sites-enabled/xhgui
+
+RUN git -C /var/www/ clone https://github.com/laynefyc/xhgui-branch.git && \
+    cd /var/www/xhgui-branch && \
+    php install.php
+
+COPY ./shell/config_init.sh /tmp/config_init.sh
+RUN /bin/bash /tmp/config_init.sh
+
+ENV LC_ALL C.UTF-8
+
+EXPOSE 80 3306
+
+CMD start
