@@ -24,6 +24,7 @@ PHP 项目的 Harness Engineering 开发环境
 
 ### 使用方法：
 
+```bash
 sudo docker run --rm -ti -p 80:80 -p 3306:3306 --name harness_engineering_php_env \\  
         -v ~/.claude:/root/.claude \\  
         -v ~/.claude.json:/root/.claude.json \\  
@@ -34,6 +35,7 @@ sudo docker run --rm -ti -p 80:80 -p 3306:3306 --name harness_engineering_php_en
         -e 'TIMEZONE=Asia/Shanghai' \\  
         -e 'AFTER_START_SHELL=/var/www/{PROJECT_NAME}/project/after_env_start.sh' \\  
         registry.cn-shenzhen.aliyuncs.com/smarty/harness_engineering_php_env start
+```
 
 将本机 claude 配置映射进去来使用配置，非必须  
 将项目的 nginx 配置文件映射到指定位置  
