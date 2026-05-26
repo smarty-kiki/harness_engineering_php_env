@@ -34,8 +34,7 @@ RUN apt-get install python3-pip -y && \
     apt-get install curl -y
 
 # Install Claude CLI
-RUN curl -fsSL https://github.com/anthropics/claude-code/releases/latest/download/claude-linux-arm64 -o /usr/local/bin/claude && \
-    chmod +x /usr/local/bin/claude
+RUN curl -fsSL https://claude.ai/install.sh | bash
 
 COPY ./shell/start.sh /bin/start
 RUN chown root:root /bin/start && \
