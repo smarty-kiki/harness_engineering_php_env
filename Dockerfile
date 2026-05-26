@@ -33,8 +33,10 @@ RUN apt-get install phpunit -y && \
 RUN apt-get install python3-pip -y && \
     apt-get install curl -y
 
-# Install Claude CLI
-RUN curl -fsSL https://claude.ai/install.sh | bash
+RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash -
+RUN apt install -y nodejs
+
+RUN npm install -g @anthropic-ai/claude-code
 
 COPY ./shell/start.sh /bin/start
 RUN chown root:root /bin/start && \
