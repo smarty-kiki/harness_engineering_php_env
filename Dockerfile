@@ -30,8 +30,7 @@ RUN apt-get install phpunit -y && \
     apt-get install tmuxinator -y && \
     apt-get install supervisor -y && \
     apt-get install toilet -y
-RUN apt-get install python3-pip -y && \
-    pip install mycli
+RUN apt-get install python3-pip -y
 
 # Install Claude CLI
 RUN curl -fsSL https://github.com/anthropics/claude-code/releases/latest/download/claude-linux-arm64 -o /usr/local/bin/claude && \
