@@ -11,7 +11,7 @@ windows:
           - printf '\033]2;%s\033\\' 'bash'
           - cd $PRJ_HOME
           - clear
-          - sleep 3
+          - sleep 1
           - claude --append-system-prompt "`cat /root/.append_system_prompt.md`"
   - bash:
       layout: even-horizontal
