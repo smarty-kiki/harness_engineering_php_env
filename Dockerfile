@@ -43,6 +43,7 @@ RUN chown root:root /bin/start && \
     chmod +x /bin/start
 
 COPY ./config/bashrc /root/.bashrc
+COPY ./config/append_system_prompt.md /root/.append_system_prompt.md
 COPY ./config/tmux.conf /root/.tmux.conf
 
 RUN mkdir -p /root/.tmuxinator
