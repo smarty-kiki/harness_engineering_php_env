@@ -35,7 +35,7 @@ sudo docker run --rm -ti -p 80:80 -p 3306:3306 --name harness_engineering_php_en
         -e 'AFTER_START_SHELL=/var/www/{PROJECT_NAME}/project/after_env_start.sh' \\
         registry.cn-shenzhen.aliyuncs.com/smarty/harness_engineering_php_env start
 
-将本机 claude 配置映射进去来使用配置，非必须
-将项目的 nginx 配置文件映射到指定位置
-指定项目所在容器中的目录
-指定启动时要初始化环境的脚本，如初始化数据库表结构等，非必须
+将本机 claude 配置映射进去来使用配置，非必须  
+将项目的 nginx 配置文件映射到指定位置  
+指定项目所在容器中的目录  
+指定启动时要初始化环境的脚本，如初始化数据库表结构等，非必须  
