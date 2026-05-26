@@ -6,8 +6,7 @@ Nginx 报错日志：/var/log/nginx/error.log
 PHP-FPM 日志：/var/log/php-fpm.log  
 MySQL 报错日志：/var/log/mysql/error.log  
 MySQL 慢查询日志：/var/log/mysql/slow.log  
-MySQL SQL 日志：/var/log/mysql/mysql.log  
-Redis 日志：/var/log/redis/redis-server.log  
+MySQL SQL 日志：/var/log/mysql/mysql.log  Redis 日志：/var/log/redis/redis-server.log  
 Redis 执行命令日志：/var/log/redis/redis-cli.log  
 
 如果项目有用 frame 框架，frame 框架实现中项目的日志文件如下：  
@@ -23,3 +22,7 @@ service mariadb      restart
 service redis-server restart  
 service beanstalkd   restart  
 service supervisor   restart  
+
+当你修改完代码后，自己将项目中所有改动添加到 git 管理范围，可执行 git add --all 命令来添加，并生成一个 commit message 来提交 commit，message 要遵循规则：  
+message 为三段结构，列出来新增了什么功能、修改了什么功能、删除了什么功能、修复了什么问题，不需要具体到文件名，而是讲什么功能什么问题  
+在 commit 时，临时定义 Author 身份，如 git commit -m "" --author="Harness Developer <harness@yao-yang.cn>"  
