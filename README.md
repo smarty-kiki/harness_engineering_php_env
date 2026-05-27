@@ -37,7 +37,7 @@ sudo docker run --rm -ti -p 80:80 -p 3306:3306 --name harness_engineering_php_en
         registry.cn-shenzhen.aliyuncs.com/smarty/harness_engineering_php_env start
 ```
 
-**注意：**
+**注意：**  
 可以将本机 claude 配置映射进去来使用配置，非必须  
 需将项目的 nginx 配置文件映射到指定位置  
 需指定项目代码对应在在容器中的目录  
