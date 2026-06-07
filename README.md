@@ -22,23 +22,36 @@
 - pip
 - claude (Anthropic CLI)
 
-### 使用方法：
+### 快速开始
+
+假设项目名为 `my-app`，代码在本机 `/home/me/projects/my-app`，nginx 配置位于项目内的 `docker/nginx.conf`：
 
 ```bash
-sudo docker run --rm -ti -p 80:80 -p 3306:3306 --name harness_engineering_php_env \\  
-        -v ~/.claude:/root/.claude \\  
-        -v ~/.claude.json:/root/.claude.json \\  
-        -v {CODE_PATH}:/var/www/{PROJECT_NAME} \\  
-        -v {NGINX_SERVER_CONFIG_FILE}:/etc/nginx/sites-enabled/default \\  
-        -v {SUPERVISOR_CONFIG_FILE}:/etc/supervisor/conf.d/{CONFIG_NAME}.conf \\  
-        -e 'PRJ_HOME=/var/www/{PROJECT_NAME}' \\  
-        -e 'TIMEZONE=Asia/Shanghai' \\  
-        -e 'AFTER_START_SHELL=/var/www/{PROJECT_NAME}/project/after_env_start.sh' \\  
-        registry.cn-shenzhen.aliyuncs.com/smarty/harness_engineering_php_env start
+sudo docker run --rm -ti \
+    -p 80:80 \
+    -p 3306:3306 \
+    --name harness_engineering_php_env \
+    -v ~/.claude:/root/.claude \
+    -v ~/.claude.json:/root/.claude.json \
+    -v /home/me/projects/my-app:/var/www/my-app \
+    -v /home/me/projects/my-app/docker/nginx.conf:/etc/nginx/sites-enabled/default \
+    -e 'PRJ_HOME=/var/www/my-app' \
+    -e 'TIMEZONE=Asia/Shanghai' \
+    registry.cn-shenzhen.aliyuncs.com/smarty/harness_engineering_php_env start
 ```
 
-**注意：**  
-可以将本机 claude 配置映射进去来使用配置，非必须  
-需将项目的 nginx 配置文件映射到指定位置  
-需指定项目代码对应在在容器中的目录  
-可指定启动时要初始化环境的脚本，如初始化数据库表结构等，非必须  
+### 参数说明
+
+| 参数 | 说明 |
+|------|------|
+| `--rm` | 容器退出后自动删除，不留残留 |
+| `-p 80:80` | 将容器的 80 端口（nginx）映射到本机 80 端口 |
+| `-p 3306:3306` | 将容器的 3306 端口（MariaDB）映射到本机，方便用本地客户端连接 |
+| `-v ~/.claude:/root/.claude` | （可选）映射本机 Claude CLI 配置目录，复用本机的对话历史和设置 |
+| `-v ~/.claude.json:/root/.claude.json` | （可选）映射本机 Claude CLI 配置文件 |
+| `-v {CODE_PATH}:/var/www/{PROJECT_NAME}` | 将项目代码目录挂载进容器 |
+| `-v {NGINX_CONF}:/etc/nginx/sites-enabled/default` | 挂载项目的 nginx 站点配置 |
+| `-v {SUPERVISOR_CONF}:/etc/supervisor/conf.d/{NAME}.conf` | （可选）挂载项目的 Supervisor 进程管理配置 |
+| `-e PRJ_HOME` | 项目在容器内的根目录路径 |
+| `-e TIMEZONE` | 容器时区，默认 `Asia/Shanghai` |
+| `-e AFTER_START_SHELL` | （可选）容器启动后执行的初始化脚本，如建表、导入测试数据等 |
