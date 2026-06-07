@@ -6,7 +6,8 @@ Nginx 报错日志：/var/log/nginx/error.log
 PHP-FPM 日志：/var/log/php-fpm.log  
 MySQL 报错日志：/var/log/mysql/error.log  
 MySQL 慢查询日志：/var/log/mysql/slow.log  
-MySQL SQL 日志：/var/log/mysql/mysql.log  Redis 日志：/var/log/redis/redis-server.log  
+MySQL SQL 日志：/var/log/mysql/mysql.log  
+Redis 日志：/var/log/redis/redis-server.log  
 Redis 执行命令日志：/var/log/redis/redis-cli.log  
 
 如果项目有用 frame 框架，frame 框架实现中项目的日志文件如下：  
