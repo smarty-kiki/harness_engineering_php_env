@@ -8,11 +8,11 @@ windows:
       layout: even-horizontal
       panes:
         - list:
-          - printf '\033]2;%s\033\\' 'bash'
+          - printf '\033]2;%s\033\\' 'claude'
           - cd $PRJ_HOME
           - clear
           - sleep 1
-          - claude --allowedTools "Read,Write,Edit,Bash,Git,Npm,Pip,Rm,Grep,Glob" --append-system-prompt "`cat /root/.append_system_prompt.md`"
+          - CLAUDE_AUTOCOMPACT_PCT_OVERRIDE=50 claude --allowedTools "Read,Write,Edit,Bash,Git,Npm,Pip,Rm,Grep,Glob" --append-system-prompt "`cat /root/.append_system_prompt.md`"
   - bash:
       layout: even-horizontal
       panes:
@@ -20,8 +20,6 @@ windows:
           - printf '\033]2;%s\033\\' 'bash'
           - cd $PRJ_HOME
           - clear
-          - sleep 3
-          - toilet 'ctrl + b, d to quit' -t -F gay
   - nginx-logs:
       layout: even-vertical
       panes:
