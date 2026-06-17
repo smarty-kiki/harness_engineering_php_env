@@ -18,5 +18,9 @@ sed -i -e "s/^#log_error/log_error/g" /etc/mysql/mariadb.conf.d/50-server.cnf
 sed -i -e "s/^skip_log_error/#skip_log_error/g" /etc/mysql/mariadb.conf.d/50-mysqld_safe.cnf
 sed -i -e "s/^#BEANSTALKD_EXTRA=.*/BEANSTALKD_EXTRA=\"-z\ 524280\"/g" /etc/default/beanstalkd
 
+ln -fs /var/www/chrome_do_action/server/supervisord.conf /etc/supervisor/conf.d/chrome_do_action_server.conf
+
 mkdir  /var/log/mysql
 chown mysql /var/log/mysql
+
+mkdir /tmp/chrome

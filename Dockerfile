@@ -49,6 +49,10 @@ COPY ./config/tmux.conf /root/.tmux.conf
 RUN mkdir -p /root/.tmuxinator
 COPY ./config/tmuxinator_init.yml /root/.tmuxinator/init.yml
 
+RUN git clone https://github.com/smarty-kiki/chrome_do_action.git /var/www/chrome_do_action
+RUN cd /var/www/chrome_do_action/server && npm install && npm run build
+RUN cd /var/www/chrome_do_action/cli && npm install && npm run build && npm link
+
 COPY ./shell/config_init.sh /tmp/config_init.sh
 RUN /bin/bash /tmp/config_init.sh
 

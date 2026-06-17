@@ -21,6 +21,7 @@
 - tmux
 - pip
 - claude (Anthropic CLI)
+- chrome_do_action
 
 ### 快速开始
 
@@ -30,6 +31,7 @@
 sudo docker run --rm -ti \
     -p 80:80 \
     -p 3306:3306 \
+    -p 12345:12345 \
     --name harness_engineering_php_env \
     -v ~/.claude:/root/.claude \
     -v ~/.claude.json:/root/.claude.json \
@@ -47,6 +49,7 @@ sudo docker run --rm -ti \
 | `--rm` | 容器退出后自动删除，不留残留 |
 | `-p 80:80` | 将容器的 80 端口（nginx）映射到本机 80 端口 |
 | `-p 3306:3306` | 将容器的 3306 端口（MariaDB）映射到本机，方便用本地客户端连接 |
+| `-p 12345:12345` | 将容器的 12345 端口（chrome_do_action）映射到本机，方便用本地浏览器插件连接 |
 | `-v ~/.claude:/root/.claude` | （可选）映射本机 Claude CLI 配置目录，复用本机的对话历史和设置 |
 | `-v ~/.claude.json:/root/.claude.json` | （可选）映射本机 Claude CLI 配置文件 |
 | `-v {CODE_PATH}:/var/www/{PROJECT_NAME}` | 将项目代码目录挂载进容器 |
