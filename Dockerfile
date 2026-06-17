@@ -28,8 +28,7 @@ RUN apt-get install phpunit -y && \
     apt-get install vim -y && \
     apt-get install tmux -y && \
     apt-get install tmuxinator -y && \
-    apt-get install supervisor -y && \
-    apt-get install toilet -y
+    apt-get install supervisor -y
 RUN apt-get install python3-pip -y && \
     apt-get install curl -y
 
