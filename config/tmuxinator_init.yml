@@ -88,4 +88,4 @@ windows:
         - list:
             - printf '\033]2;%s\033\\' 'cda-log'
             - clear
-            - tail -n 100 -F /tmp/chrome/supervisor-\*.log
+            - tail -n 100 -F /tmp/chrome/supervisor-*.log
