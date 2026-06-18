@@ -82,3 +82,10 @@ windows:
             - printf '\033]2;%s\033\\' 'action-log'
             - clear
             - redis-cli monitor | tee /var/log/redis/redis-cli.log | perl -pe 's/(GET|SET)|(KEYS)|(HGET|HSET)/\e[1;34m$1\e[0m\e[1;33m$2\e[0m\e[1;31m$3\e[0m/gi'
+  - cda-logs:
+      layout: even-vertical
+      panes:
+        - list:
+            - printf '\033]2;%s\033\\' 'cda-log'
+            - clear
+            - tail -n 100 -F /tmp/chrome/supervisor-\*.log
