@@ -35,7 +35,7 @@ RUN apt-get install python3-pip -y && \
 RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash -
 RUN apt install -y nodejs
 
-RUN npm install -g @anthropic-ai/claude-code
+RUN npm install -g @anthropic-ai/claude-code@2.1.153
 
 COPY ./shell/start.sh /bin/start
 RUN chown root:root /bin/start && \
