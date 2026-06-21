@@ -52,6 +52,9 @@ RUN git clone https://github.com/smarty-kiki/chrome_do_action.git /var/www/chrom
 RUN cd /var/www/chrome_do_action/server && npm install && npm run build
 RUN cd /var/www/chrome_do_action/cli && npm install && npm run build && npm link
 
+RUN git clone https://github.com/smarty-kiki/chrome_call_your_claude_code /var/www/chrome_call_your_claude_code
+RUN cd /var/www/chrome_call_your_claude_code/server && npm install
+
 COPY ./shell/config_init.sh /tmp/config_init.sh
 RUN /bin/bash /tmp/config_init.sh
 
