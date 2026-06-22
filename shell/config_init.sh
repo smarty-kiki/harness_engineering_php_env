@@ -21,7 +21,7 @@ sed -i -e "s/^#BEANSTALKD_EXTRA=.*/BEANSTALKD_EXTRA=\"-z\ 524280\"/g" /etc/defau
 ln -fs /var/www/chrome_do_action/server/supervisord.conf /etc/supervisor/conf.d/chrome_do_action_server.conf
 ln -fs /var/www/chrome_call_your_claude_code/server/supervisord.conf /etc/supervisor/conf.d/chrome_call_your_claude_code.conf
 
-mkdir  /var/log/mysql
+mkdir /var/log/mysql
 chown mysql /var/log/mysql
 
 mkdir /tmp/chrome
