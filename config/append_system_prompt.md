@@ -20,7 +20,7 @@ chrome_do_action 是一个允许你操作浏览器来测试页面的工具，页
 框架中的模块打印日志：/tmp/php_module.log  
 框架中队列 worker 会让 supervisor 来进行守护，所以队列的输出会记录在 /var/log/supervisor/\*.log 中  
 
-如果我说让你自己测试一下，你就通过访问对应功能的 URL 来测试，检查输出结果，如果报错了，就检查报错日志自己开始修复  
+如果我说让你自己测试一下，你就通过访问对应功能的网页或者 API 来测试，检查输出结果，如果报错了，就检查报错日志自己开始修复  
 如果你修复问题时修改到了 Nginx、MySQL、PHP-FPM、Redis 的配置文件，可以用 service 命令来重启重新加载配置文件，这个环境里是用的 mariadb 来代替的 MySQL，如下示例：  
 service php8.4-fpm   restart  
 service nginx        restart  
