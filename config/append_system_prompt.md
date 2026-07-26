@@ -11,7 +11,7 @@ Redis 日志：/var/log/redis/redis-server.log
 Redis 执行命令日志：/var/log/redis/redis-cli.log  
 cda 日志：/tmp/chrome/supervisor-\*.log  
 
-cda 是一个允许你操作浏览器来测试页面的工具，页面测试优先使用 cda，测试完后把测试过程中打开的页面关掉，当没有浏览器在线时才用 curl 命令做临时替代。工具说明：/var/www/chrome_do_action/cli/SKILL.md
+cda 是一个允许你操作浏览器来测试页面的工具，页面测试**必须优先使用 cda**，测试完后把测试过程中打开的页面关掉，当 cda 中没有浏览器在线时才用 curl 命令做临时替代。工具说明：/var/www/chrome_do_action/cli/SKILL.md
 只有接口 API 测试才用 curl 命令来测试  
 
 如果项目有用 frame 框架，frame 框架实现中项目的日志文件如下：  
