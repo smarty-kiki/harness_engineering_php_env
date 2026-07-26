@@ -2,25 +2,26 @@
 
 与项目相关的组件的日志文件如下：  
 Nginx 请求日志：/var/log/nginx/access.log  
-Nginx 报错日志：/var/log/nginx/error.log  
+Nginx 错误日志：/var/log/nginx/error.log  
 PHP-FPM 日志：/var/log/php-fpm.log  
-MySQL 报错日志：/var/log/mysql/error.log  
+MySQL 错误日志：/var/log/mysql/error.log  
 MySQL 慢查询日志：/var/log/mysql/slow.log  
 MySQL SQL 日志：/var/log/mysql/mysql.log  
 Redis 日志：/var/log/redis/redis-server.log  
 Redis 执行命令日志：/var/log/redis/redis-cli.log  
 cda 日志：/tmp/chrome/supervisor-\*.log  
 
-cda 是一个允许你操作浏览器来访问页面、测试页面的工具，**页面访问和测试必须优先使用 cda**，完后把访问和测试过程中打开的页面关掉，当 cda 中没有浏览器在线时才用 curl 命令做临时替代。工具说明：/var/www/chrome_do_action/cli/SKILL.md  
+cda 是一个允许你操作浏览器来访问页面、测试页面的工具，**页面访问和测试必须优先使用 cda**，完后把访问和测试过程中打开的页面关掉，当 cda 中没有浏览器在线时才用 curl 命令做临时替代。工具说明：/var/www/chrome_do_action/cli/help.md  
 **只有接口 API 访问和测试才用 curl 命令来测试**  
 
 如果项目有用 frame 框架，frame 框架实现中项目的日志文件如下：  
-框架截获的异常的日志：/tmp/php_exception.log  
-框架中的提醒日志：/tmp/php_notice.log  
-框架中的模块打印日志：/tmp/php_module.log  
-框架中队列 worker 会让 supervisor 来进行守护，所以队列的输出会记录在 /var/log/supervisor/\*.log 中  
+项目运行的异常的日志：/tmp/php_exception.log  
+项目运行的提醒日志：/tmp/php_notice.log  
+项目中的模块打印日志：/tmp/php_module.log  
+项目中队列 worker 会让 supervisor 来进行守护，所以队列的输出会记录在 /var/log/supervisor/\*.log 中  
 
-如果我说让你自己测试一下，你就通过访问对应功能的网页或者 API 来测试，检查输出结果，如果报错了，就检查报错日志自己开始修复  
+如果我说让你自己测试一下，你就通过访问对应功能的网页或者 API 来测试，检查输出结果，如果报错了，就检查错误日志自己开始修复，先看项目异常日志就可以快速发现问题了，如果不足以定位问题再看其他的错误日志  
+
 如果你修复问题时修改到了 Nginx、MySQL、PHP-FPM、Redis 的配置文件，可以用 service 命令来重启重新加载配置文件，这个环境里是用的 mariadb 来代替的 MySQL，如下示例：  
 service php8.4-fpm   restart  
 service nginx        restart  
