@@ -60,4 +60,5 @@ sudo docker run --rm -ti \
 | `-v {SUPERVISOR_CONF}:/etc/supervisor/conf.d/{NAME}.conf` | （可选）挂载项目的 Supervisor 进程管理配置 |
 | `-e PRJ_HOME` | 项目在容器内的根目录路径 |
 | `-e TIMEZONE` | 容器时区，默认 `Asia/Shanghai` |
+| `-e BEFORE_START_SHELL` | （可选）容器启动、服务进程启动前执行的初始化脚本，如准备目录、权限、服务启动前依赖的配置文件等 |
 | `-e AFTER_START_SHELL` | （可选）容器启动后执行的初始化脚本，如建表、导入测试数据等 |

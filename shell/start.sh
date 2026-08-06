@@ -6,6 +6,11 @@ then
     echo $TIMEZONE >/etc/timezone
 fi
 
+if [ -f "$BEFORE_START_SHELL" ]
+then
+    /bin/bash $BEFORE_START_SHELL
+fi
+
 service php8.4-fpm   start > /dev/null &
 service nginx        start > /dev/null &
 service mariadb      start > /dev/null &
