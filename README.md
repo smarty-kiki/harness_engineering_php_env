@@ -43,6 +43,8 @@ sudo docker run --rm -ti \
     registry.cn-shenzhen.aliyuncs.com/smarty/harness_engineering_php_env start
 ```
 
+> **注意：** 要使用容器的完整开发能力，必须通过上述方式启动容器（即 `docker run ... start` 启动命令末尾带上 `start`）。启动完成后会直接进入 `start` 命令的界面——所有服务（nginx、MariaDB、redis、beanstalkd、supervisor 等）已启动完毕，并已进入 tmux 开发会话。请勿使用 `docker exec` 等方式绕过 `start` 直接进入容器，否则服务不会启动，开发能力不完整。
+
 ### 参数说明
 
 | 参数 | 说明 |
