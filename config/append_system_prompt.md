@@ -14,7 +14,7 @@ cda 日志：/tmp/chrome/supervisor-\*.log
 cda 是一个允许你操作浏览器来访问页面、测试页面的工具，**页面访问和测试必须优先使用 cda**，完后把访问和测试过程中你自己打开的页面关掉，**原本就存在的页面不要去关**，当 cda 中没有浏览器在线时才用 curl 命令做临时替代。工具说明：/var/www/chrome_do_action/cli/help.md  
 **只有接口 API 访问和测试才用 curl 命令来测试**  
 
-如果项目有用 frame 框架，frame 框架实现中项目的日志文件如下：  
+如果项目有用 php-vibe-coding-frame 框架，php-vibe-coding-frame 框架实现中项目的日志文件如下：  
 项目运行的异常的日志：/tmp/php_exception.log  
 项目运行的提醒日志：/tmp/php_notice.log  
 项目中的模块打印日志：/tmp/php_module.log  
