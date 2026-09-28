@@ -11,15 +11,12 @@ then
     /bin/bash $BEFORE_START_SHELL
 fi
 
-# clickhouse 的 pid 目录（init 脚本里写死的 /var/run/clickhouse-server）在 tmpfs 下，每次启动都要重建
-mkdir -p /var/run/clickhouse-server
-chown clickhouse:clickhouse /var/run/clickhouse-server
-
 service php8.4-fpm   start > /dev/null &
 service nginx        start > /dev/null &
 service mariadb      start > /dev/null &
 service redis-server start > /dev/null &
 service beanstalkd   start > /dev/null &
+# clickhouse 的 pid 目录在 tmpfs 下，每次启动都要重建，这一步由 clickhouse 的 init 脚本自己负责
 service clickhouse-server start > /dev/null &
 service supervisor   start > /dev/null &
 

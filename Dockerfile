@@ -46,9 +46,11 @@ RUN curl -fsSL 'https://packages.clickhouse.com/rpm/lts/repodata/repomd.xml.key'
     apt-get install clickhouse-client -y && \
     rm -f /usr/sbin/policy-rc.d
 
-# 没有 systemd，靠 deb 自带的 /etc/init.d/clickhouse-server 启动，配置一律用 config.d 覆盖
+# 没有 systemd，用自己写的 init 脚本替换 deb 自带的（原因见脚本里的注释），配置一律用 config.d 覆盖
 RUN mkdir -p /etc/clickhouse-server/config.d
 COPY ./config/clickhouse_config.xml /etc/clickhouse-server/config.d/harness.xml
+COPY ./config/clickhouse_init.sh /etc/init.d/clickhouse-server
+RUN chmod +x /etc/init.d/clickhouse-server
 
 RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash -
 RUN apt install -y nodejs

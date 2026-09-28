@@ -34,6 +34,10 @@
 
     <merge_tree>
         <max_bytes_to_merge_at_max_space_in_pool>1073741824</max_bytes_to_merge_at_max_space_in_pool>
+        <!-- background_pool_size 压到 4 之后，合并线程池只有 4 * background_merges_mutations_concurrency_ratio（默认 2）= 8 个槽位，
+             而这两个阈值出厂默认是 20 和 25，启动自检时会因为超过槽位数直接报 BAD_ARGUMENTS 拒绝启动 -->
+        <number_of_free_entries_in_pool_to_execute_mutation>2</number_of_free_entries_in_pool_to_execute_mutation>
+        <number_of_free_entries_in_pool_to_execute_optimize_entire_partition>2</number_of_free_entries_in_pool_to_execute_optimize_entire_partition>
     </merge_tree>
 
     <trace_log remove="remove"/>
