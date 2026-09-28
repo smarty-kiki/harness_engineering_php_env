@@ -24,4 +24,7 @@ ln -fs /var/www/chrome_call_your_claude_code/server/supervisord.conf /etc/superv
 mkdir /var/log/mysql
 chown mysql /var/log/mysql
 
+mkdir -p /var/log/clickhouse-server
+chown clickhouse:clickhouse /var/log/clickhouse-server
+
 mkdir /tmp/chrome

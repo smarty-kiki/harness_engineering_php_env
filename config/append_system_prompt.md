@@ -9,10 +9,16 @@ MySQL 慢查询日志：/var/log/mysql/slow.log
 MySQL SQL 日志：/var/log/mysql/mysql.log  
 Redis 日志：/var/log/redis/redis-server.log  
 Redis 执行命令日志：/var/log/redis/redis-cli.log  
+ClickHouse 服务日志：/var/log/clickhouse-server/clickhouse-server.log  
+ClickHouse 错误日志：/var/log/clickhouse-server/clickhouse-server.err.log  
 cda 日志：/tmp/chrome/supervisor-\*.log  
 
 cda 是一个允许你操作浏览器来访问页面、测试页面的工具，**页面访问和测试必须优先使用 cda**，完后把访问和测试过程中你自己打开的页面关掉，**原本就存在的页面不要去关**，当 cda 中没有浏览器在线时才用 curl 命令做临时替代。工具说明：/var/www/chrome_do_action/cli/help.md  
 **只有接口 API 访问和测试才用 curl 命令来测试**  
+
+ClickHouse 的 SQL 记录在 system.query_log 表里，要看 SQL 就用 clickhouse-client 查询，例如：  
+clickhouse-client --query "SELECT event_time, query_duration_ms, exception, query FROM system.query_log WHERE type = 'QueryFinish' ORDER BY event_time DESC LIMIT 20"  
+ClickHouse 的配置不要直接改 /etc/clickhouse-server/config.xml，在 /etc/clickhouse-server/config.d/ 下新建 xml 文件覆盖  
 
 如果项目有用 php-vibe-coding-frame 框架，php-vibe-coding-frame 框架实现中项目的日志文件如下：  
 项目运行的异常的日志：/tmp/php_exception.log  
@@ -22,12 +28,13 @@ cda 是一个允许你操作浏览器来访问页面、测试页面的工具，*
 
 如果我说让你自己测试一下，你就通过访问对应功能的网页或者 API 来测试，检查输出结果，如果报错了，就检查错误日志自己开始修复，先看项目异常日志就可以快速发现问题了，如果不足以定位问题再看其他的错误日志  
 
-如果你修复问题时修改到了 Nginx、MySQL、PHP-FPM、Redis 的配置文件，可以用 service 命令来重启重新加载配置文件，这个环境里是用的 mariadb 来代替的 MySQL，如下示例：  
+如果你修复问题时修改到了 Nginx、MySQL、PHP-FPM、Redis、ClickHouse 的配置文件，可以用 service 命令来重启重新加载配置文件，这个环境里是用的 mariadb 来代替的 MySQL，如下示例：  
 service php8.4-fpm   restart  
 service nginx        restart  
 service mariadb      restart  
 service redis-server restart  
 service beanstalkd   restart  
+service clickhouse-server restart  
 service supervisor   restart  
 
 当你修改完代码后，自己将项目中所有改动添加到 git 管理范围，可执行 git add --all 命令来添加，并生成一个 commit message 来提交 commit，message 要遵循规则：  

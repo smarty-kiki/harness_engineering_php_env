@@ -32,6 +32,20 @@ RUN apt-get install phpunit -y && \
 RUN apt-get install python3-pip -y && \
     apt-get install curl -y
 
+# clickhouse 需要先导入官方源与签名密钥（curl、gnupg 要到上面一层才装好）
+RUN curl -fsSL 'https://packages.clickhouse.com/rpm/lts/repodata/repomd.xml.key' | gpg --dearmor -o /usr/share/keyrings/clickhouse-keyring.gpg && \
+    echo "deb [signed-by=/usr/share/keyrings/clickhouse-keyring.gpg arch=$(dpkg --print-architecture)] https://packages.clickhouse.com/deb lts main" > /etc/apt/sources.list.d/clickhouse.list && \
+    printf '#!/bin/sh\nexit 101\n' > /usr/sbin/policy-rc.d && \
+    chmod +x /usr/sbin/policy-rc.d && \
+    apt-get update && \
+    apt-get install clickhouse-server -y && \
+    apt-get install clickhouse-client -y && \
+    rm -f /usr/sbin/policy-rc.d
+
+# 没有 systemd，靠 deb 自带的 /etc/init.d/clickhouse-server 启动，配置一律用 config.d 覆盖
+RUN mkdir -p /etc/clickhouse-server/config.d
+COPY ./config/clickhouse_config.xml /etc/clickhouse-server/config.d/harness.xml
+
 RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash -
 RUN apt install -y nodejs
 
@@ -60,6 +74,6 @@ RUN /bin/bash /tmp/config_init.sh
 
 ENV LC_ALL C.UTF-8
 
-EXPOSE 80 3306
+EXPOSE 80 3306 8123 12345 12346
 
 CMD start

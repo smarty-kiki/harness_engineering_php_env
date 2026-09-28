@@ -1,0 +1,29 @@
+<clickhouse>
+    <!-- 默认只监听 127.0.0.1，放开后才能通过 -p 8123 从宿主机连进来 -->
+    <listen_host>0.0.0.0</listen_host>
+
+    <!-- 默认日志级别是 trace，量非常大，开发环境降到 information -->
+    <logger>
+        <level>information</level>
+        <log>/var/log/clickhouse-server/clickhouse-server.log</log>
+        <errorlog>/var/log/clickhouse-server/clickhouse-server.err.log</errorlog>
+        <size>100M</size>
+        <count>3</count>
+    </logger>
+
+    <!-- SQL 都记录在 system.query_log 表里，默认没有 TTL，这里加一个兜底（表按 toYYYYMM 分区，实际是按月粒度删）
+         默认 flush 是 7.5 秒，改短一点，让刚执行过的 SQL 马上能查到 -->
+    <query_log>
+        <database>system</database>
+        <table>query_log</table>
+        <flush_interval_milliseconds>1000</flush_interval_milliseconds>
+        <ttl>event_date + INTERVAL 3 DAY DELETE</ttl>
+    </query_log>
+
+    <!-- 容器里还跑着 mariadb、php-fpm，别让 clickhouse 把内存吃满 -->
+    <max_server_memory_usage_to_ram_ratio>0.5</max_server_memory_usage_to_ram_ratio>
+
+    <!-- 需要让 PHP 用 mysqli/PDO 走 MySQL 兼容协议直连时打开（只支持有限的 SQL 子集）
+    <mysql_port>9004</mysql_port>
+    -->
+</clickhouse>

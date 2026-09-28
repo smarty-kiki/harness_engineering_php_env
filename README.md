@@ -10,6 +10,7 @@
 - mariadb-server
 - redis-server
 - beanstalkd
+- clickhouse-server
 - php8.4-fpm
 - phpunit
 - inotify-tools
@@ -32,6 +33,7 @@
 sudo docker run --rm -ti \
     -p 80:80 \
     -p 3306:3306 \
+    -p 8123:8123 \
     -p 12345:12345 \
     -p 12346:12346 \
     --name harness_engineering_php_env \
@@ -43,7 +45,7 @@ sudo docker run --rm -ti \
     registry.cn-shenzhen.aliyuncs.com/smarty/harness_engineering_php_env start
 ```
 
-> **注意：** 要使用容器的完整开发能力，必须通过上述方式启动容器（即 `docker run ... start` 启动命令末尾带上 `start`）。启动完成后会直接进入 `start` 命令的界面——所有服务（nginx、MariaDB、redis、beanstalkd、supervisor 等）已启动完毕，并已进入 tmux 开发会话。请勿使用 `docker exec` 等方式绕过 `start` 直接进入容器，否则服务不会启动，开发能力不完整。
+> **注意：** 要使用容器的完整开发能力，必须通过上述方式启动容器（即 `docker run ... start` 启动命令末尾带上 `start`）。启动完成后会直接进入 `start` 命令的界面——所有服务（nginx、MariaDB、redis、beanstalkd、ClickHouse、supervisor 等）已启动完毕，并已进入 tmux 开发会话。请勿使用 `docker exec` 等方式绕过 `start` 直接进入容器，否则服务不会启动，开发能力不完整。
 
 ### 参数说明
 
@@ -52,6 +54,7 @@ sudo docker run --rm -ti \
 | `--rm` | 容器退出后自动删除，不留残留 |
 | `-p 80:80` | 将容器的 80 端口（nginx）映射到本机 80 端口 |
 | `-p 3306:3306` | 将容器的 3306 端口（MariaDB）映射到本机，方便用本地客户端连接 |
+| `-p 8123:8123` | 将容器的 8123 端口（ClickHouse HTTP 接口）映射到本机，方便用本地客户端连接 |
 | `-p 12345:12345` | 将容器的 12345 端口（chrome_do_action）映射到本机，方便用本地浏览器插件连接 |
 | `-p 12346:12346` | 将容器的 12346 端口（chrome_call_your_claude_code）映射到本机，方便用本地浏览器插件连接 |
 | `-v ~/.claude:/root/.claude` | （可选）映射本机 Claude CLI 配置目录，复用本机的对话历史和设置 |

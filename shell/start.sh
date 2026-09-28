@@ -11,17 +11,28 @@ then
     /bin/bash $BEFORE_START_SHELL
 fi
 
+# clickhouse 的 pid 目录（init 脚本里写死的 /var/run/clickhouse-server）在 tmpfs 下，每次启动都要重建
+mkdir -p /var/run/clickhouse-server
+chown clickhouse:clickhouse /var/run/clickhouse-server
+
 service php8.4-fpm   start > /dev/null &
 service nginx        start > /dev/null &
 service mariadb      start > /dev/null &
 service redis-server start > /dev/null &
 service beanstalkd   start > /dev/null &
+service clickhouse-server start > /dev/null &
 service supervisor   start > /dev/null &
 
 wait
 
 if [ -f "$AFTER_START_SHELL" ]
 then
+    # clickhouse 起来后还要过几秒才接受连接，而 service 只等到进程起来（systemd 下是靠 Type=notify 等的）
+    for i in $(seq 1 30)
+    do
+        clickhouse-client --query 'SELECT 1' > /dev/null 2>&1 && break
+        sleep 0.5
+    done
     /bin/bash $AFTER_START_SHELL
 fi
 
