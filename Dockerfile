@@ -1,5 +1,9 @@
 FROM debian
 
+# 构建环境带 tty 时，clickhouse 的 postinst（clickhouse install）会因为在 tty 上等密码输入而卡死构建，
+# 它只在 stdout 是 tty 且 DEBIAN_FRONTEND 不是 noninteractive 时才去读密码，这里统一声明为非交互
+ARG DEBIAN_FRONTEND=noninteractive
+
 RUN apt-get update && \
     apt-get install apt-utils -y && \
     apt-get upgrade -y && \
