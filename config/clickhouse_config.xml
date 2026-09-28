@@ -1,8 +1,6 @@
 <clickhouse>
-    <!-- 默认只监听 127.0.0.1，放开后才能通过 -p 8123 从宿主机连进来 -->
     <listen_host>0.0.0.0</listen_host>
 
-    <!-- 默认日志级别是 trace，量非常大，开发环境降到 information -->
     <logger>
         <level>information</level>
         <log>/var/log/clickhouse-server/clickhouse-server.log</log>
@@ -11,19 +9,52 @@
         <count>3</count>
     </logger>
 
-    <!-- SQL 都记录在 system.query_log 表里，默认没有 TTL，这里加一个兜底（表按 toYYYYMM 分区，实际是按月粒度删）
-         默认 flush 是 7.5 秒，改短一点，让刚执行过的 SQL 马上能查到 -->
+    <max_server_memory_usage_to_ram_ratio>0.25</max_server_memory_usage_to_ram_ratio>
+    <merges_mutations_memory_usage_to_ram_ratio>0.2</merges_mutations_memory_usage_to_ram_ratio>
+
+    <mark_cache_size>134217728</mark_cache_size>
+    <index_mark_cache_size>33554432</index_mark_cache_size>
+    <uncompressed_cache_size>0</uncompressed_cache_size>
+    <compiled_expression_cache_size>33554432</compiled_expression_cache_size>
+    <query_condition_cache_size>16777216</query_condition_cache_size>
+
+    <background_pool_size>4</background_pool_size>
+    <background_schedule_pool_size>16</background_schedule_pool_size>
+    <background_common_pool_size>2</background_common_pool_size>
+    <background_move_pool_size>2</background_move_pool_size>
+    <background_fetches_pool_size>2</background_fetches_pool_size>
+    <background_distributed_schedule_pool_size>2</background_distributed_schedule_pool_size>
+
+    <max_concurrent_queries>20</max_concurrent_queries>
+    <max_connections>200</max_connections>
+    <max_thread_pool_size>1000</max_thread_pool_size>
+    <max_thread_pool_free_size>100</max_thread_pool_free_size>
+
+    <total_memory_profiler_step>0</total_memory_profiler_step>
+
+    <merge_tree>
+        <max_bytes_to_merge_at_max_space_in_pool>1073741824</max_bytes_to_merge_at_max_space_in_pool>
+    </merge_tree>
+
+    <trace_log remove="remove"/>
+    <query_thread_log remove="remove"/>
+    <query_views_log remove="remove"/>
+    <part_log remove="remove"/>
+    <text_log remove="remove"/>
+    <metric_log remove="remove"/>
+    <asynchronous_metric_log remove="remove"/>
+    <opentelemetry_span_log remove="remove"/>
+    <processors_profile_log remove="remove"/>
+    <asynchronous_insert_log remove="remove"/>
+    <backup_log remove="remove"/>
+    <blob_storage_log remove="remove"/>
+    <aggregated_zookeeper_log remove="remove"/>
+    <zookeeper_connection_log remove="remove"/>
+
     <query_log>
         <database>system</database>
         <table>query_log</table>
         <flush_interval_milliseconds>1000</flush_interval_milliseconds>
         <ttl>event_date + INTERVAL 3 DAY DELETE</ttl>
     </query_log>
-
-    <!-- 容器里还跑着 mariadb、php-fpm，别让 clickhouse 把内存吃满 -->
-    <max_server_memory_usage_to_ram_ratio>0.5</max_server_memory_usage_to_ram_ratio>
-
-    <!-- 需要让 PHP 用 mysqli/PDO 走 MySQL 兼容协议直连时打开（只支持有限的 SQL 子集）
-    <mysql_port>9004</mysql_port>
-    -->
 </clickhouse>
