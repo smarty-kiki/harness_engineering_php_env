@@ -10,7 +10,7 @@
 - mariadb-server
 - redis-server
 - beanstalkd
-- clickhouse-server
+- clickhouse-server（可选组件，默认不启动，启动命令末尾加 `--enable clickhouse` 才启动）
 - php8.4-fpm
 - phpunit
 - inotify-tools
@@ -45,7 +45,9 @@ sudo docker run --rm -ti \
     registry.cn-shenzhen.aliyuncs.com/smarty/harness_engineering_php_env start
 ```
 
-> **注意：** 要使用容器的完整开发能力，必须通过上述方式启动容器（即 `docker run ... start` 启动命令末尾带上 `start`）。启动完成后会直接进入 `start` 命令的界面——所有服务（nginx、MariaDB、redis、beanstalkd、ClickHouse、supervisor 等）已启动完毕，并已进入 tmux 开发会话。请勿使用 `docker exec` 等方式绕过 `start` 直接进入容器，否则服务不会启动，开发能力不完整。
+> **注意：** 要使用容器的完整开发能力，必须通过上述方式启动容器（即 `docker run ... start` 启动命令末尾带上 `start`）。启动完成后会直接进入 `start` 命令的界面——基础服务（nginx、MariaDB、redis、beanstalkd、php-fpm、supervisor 等）已启动完毕，并已进入 tmux 开发会话。请勿使用 `docker exec` 等方式绕过 `start` 直接进入容器，否则服务不会启动，开发能力不完整。
+
+> **关于 ClickHouse：** ClickHouse 属于可选组件，默认不启动（省内存，tmux 里不会有它的日志窗口，发给 claude 的系统提示词里也不包含它）。项目需要 ClickHouse 时，在启动命令末尾追加 `--enable clickhouse`，即 `... harness_engineering_php_env start --enable clickhouse`。
 
 ### 参数说明
 
@@ -64,3 +66,4 @@ sudo docker run --rm -ti \
 | `-e TIMEZONE` | 容器时区，默认 `Asia/Shanghai` |
 | `-e BEFORE_START_SHELL` | （可选）容器启动、服务进程启动前执行的初始化脚本，如准备目录、权限、服务启动前依赖的配置文件等 |
 | `-e AFTER_START_SHELL` | （可选）容器启动后执行的初始化脚本，如建表、导入测试数据等 |
+| `start --enable <组件名>` | 跟在启动命令末尾的 `start` 后面，启动默认不启动的可选组件，当前支持 `clickhouse`，如 `start --enable clickhouse`（可逗号分隔多个，为以后扩展预留） |
