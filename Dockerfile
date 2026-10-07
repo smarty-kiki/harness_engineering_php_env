@@ -52,6 +52,33 @@ COPY ./config/clickhouse_config.xml /etc/clickhouse-server/config.d/harness.xml
 COPY ./config/clickhouse_init.sh /etc/init.d/clickhouse-server
 RUN chmod +x /etc/init.d/clickhouse-server
 
+# kafka 队列：与 clickhouse 一样属于可选组件——这里只装，默认不启动，启动命令加 --enable kafka 才起 broker。
+# 三样东西：php-rdkafka 扩展（php-vibe-coding-frame 的 kafka 队列实现用的客户端，装了不影响不用它的项目）、
+# broker 本体（官方 tar 包，KRaft 单机模式、不需要 zookeeper）与看消息用的 kcat；jre 是 broker 的运行环境，
+# procps 是 kafka-server-stop.sh 找进程要用的。pecl 与编译工具链由上面的 php8.4-dev 带出来
+ARG KAFKA_VERSION=4.1.2
+ARG KAFKA_SCALA_VERSION=2.13
+RUN apt-get install -y librdkafka-dev default-jre-headless kcat procps && \
+    printf '\n\n\n\n\n' | pecl install rdkafka && \
+    echo "extension=rdkafka.so" > /etc/php/8.4/mods-available/rdkafka.ini && \
+    phpenmod -v 8.4 rdkafka && \
+    curl -fsSL "https://mirrors.aliyun.com/apache/kafka/${KAFKA_VERSION}/kafka_${KAFKA_SCALA_VERSION}-${KAFKA_VERSION}.tgz" -o /tmp/kafka.tgz && \
+    tar xzf /tmp/kafka.tgz -C /opt && \
+    mv "/opt/kafka_${KAFKA_SCALA_VERSION}-${KAFKA_VERSION}" /opt/kafka && \
+    rm /tmp/kafka.tgz && \
+    for cmd in kafka-topics kafka-consumer-groups kafka-console-producer kafka-console-consumer kafka-configs kafka-get-offsets; do \
+        printf '#!/bin/sh\nexec /opt/kafka/bin/%s.sh "$@"\n' "$cmd" > "/usr/local/bin/${cmd}"; \
+        chmod +x "/usr/local/bin/${cmd}"; \
+    done
+
+# 单机开发环境的 broker 覆盖项追加在出厂 server.properties 之后（不整份替换，避免跟不上版本变化）
+COPY ./config/kafka_server.properties /opt/kafka/config/harness.properties
+RUN cat /opt/kafka/config/harness.properties >> /opt/kafka/config/server.properties
+
+# deb 里没有 kafka 包，init 脚本自己写（KRaft 首次启动前要格式化元数据，见脚本里的注释）
+COPY ./config/kafka_init.sh /etc/init.d/kafka
+RUN chmod +x /etc/init.d/kafka
+
 RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash -
 RUN apt install -y nodejs
 
@@ -80,6 +107,6 @@ RUN /bin/bash /tmp/config_init.sh
 
 ENV LC_ALL C.UTF-8
 
-EXPOSE 80 3306 8123 12345 12346
+EXPOSE 80 3306 8123 9092 12345 12346
 
 CMD start

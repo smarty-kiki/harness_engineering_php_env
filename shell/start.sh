@@ -1,10 +1,10 @@
 #!/bin/bash
 
-# 可选组件默认不启动，用 start --enable <组件名> 按需打开（值可逗号分隔多个，如 --enable clickhouse）
+# 可选组件默认不启动，用 start --enable <组件名> 按需打开（值可逗号分隔多个，如 --enable clickhouse,kafka）
 usage_error()
 {
     echo "$1" >&2
-    echo "用法：start [--enable <组件名>]（当前支持的可选组件：clickhouse）" >&2
+    echo "用法：start [--enable <组件名>]（当前支持的可选组件：clickhouse、kafka）" >&2
     exit 1
 }
 
@@ -34,6 +34,7 @@ for component in $(echo "$ENABLED_COMPONENTS" | tr ',' ' ')
 do
     case "$component" in
         clickhouse) ;;
+        kafka) ;;
         *) usage_error "不支持的可选组件：$component" ;;
     esac
 done
@@ -68,6 +69,11 @@ then
     # clickhouse 的 pid 目录在 tmpfs 下，每次启动都要重建，这一步由 clickhouse 的 init 脚本自己负责
     service clickhouse-server start > /dev/null &
 fi
+if is_enabled kafka
+then
+    # KRaft 元数据的首次格式化、启动与就绪等待都在 kafka 的 init 脚本里
+    service kafka start > /dev/null &
+fi
 service supervisor   start > /dev/null &
 
 wait
@@ -80,6 +86,15 @@ then
         for i in $(seq 1 30)
         do
             clickhouse-client --query 'SELECT 1' > /dev/null 2>&1 && break
+            sleep 0.5
+        done
+    fi
+    if is_enabled kafka
+    then
+        # kafka broker 要等 KRaft 元数据加载完才接受请求，等它能应答再往下走
+        for i in $(seq 1 60)
+        do
+            kafka-topics --bootstrap-server 127.0.0.1:9092 --list > /dev/null 2>&1 && break
             sleep 0.5
         done
     fi

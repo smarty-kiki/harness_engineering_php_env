@@ -87,6 +87,19 @@ windows:
             - clear
             - tail -n 100 -F /var/log/clickhouse-server/clickhouse-server.err.log | perl -pe 's/(<Trace>|<Debug>)|(<Information>|<Warning>)|(<Error>|<Fatal>)/\e[1;34m$1\e[0m\e[1;33m$2\e[0m\e[1;31m$3\e[0m/gi'
 <% end %>
+<% if enabled_components.include?('kafka') %>
+  - kafka-logs:
+      layout: even-vertical
+      panes:
+        - list:
+            - printf '\033]2;%s\033\\' 'kafka-server-log'
+            - clear
+            - tail -n 100 -F /var/log/kafka/server.log | perl -pe 's/(DEBUG)|(INFO)|(WARN)|(ERROR|FATAL)/\e[1;34m$1\e[0m\e[1;33m$2\e[0m\e[1;31m$3\e[0m/gi'
+        - list:
+            - printf '\033]2;%s\033\\' 'kafka-controller-log'
+            - clear
+            - tail -n 100 -F /var/log/kafka/controller.log | perl -pe 's/(DEBUG)|(INFO)|(WARN)|(ERROR|FATAL)/\e[1;34m$1\e[0m\e[1;33m$2\e[0m\e[1;31m$3\e[0m/gi'
+<% end %>
   - redis-logs:
       layout: even-vertical
       panes:

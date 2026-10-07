@@ -11,6 +11,7 @@
 - redis-server
 - beanstalkd
 - clickhouse-server（可选组件，默认不启动，启动命令末尾加 `--enable clickhouse` 才启动）
+- kafka（可选组件：broker 默认不启动，启动命令末尾加 `--enable kafka` 才启动；php 的 rdkafka 扩展与 kcat 命令行已装好，装了不影响不用 kafka 的项目）
 - php8.4-fpm
 - phpunit
 - inotify-tools
@@ -34,6 +35,7 @@ sudo docker run --rm -ti \
     -p 80:80 \
     -p 3306:3306 \
     -p 8123:8123 \
+    -p 9092:9092 \
     -p 12345:12345 \
     -p 12346:12346 \
     --name harness_engineering_php_env \
@@ -49,6 +51,8 @@ sudo docker run --rm -ti \
 
 > **关于 ClickHouse：** ClickHouse 属于可选组件，默认不启动（省内存，tmux 里不会有它的日志窗口，发给 claude 的系统提示词里也不包含它）。项目需要 ClickHouse 时，在启动命令末尾追加 `--enable clickhouse`，即 `... harness_engineering_php_env start --enable clickhouse`。
 
+> **关于 Kafka：** Kafka 同属可选组件，默认也不启动（broker 是单机 KRaft 模式，日志窗口与系统提示词里的内容同样跟着启停走）。项目需要 Kafka 时，在启动命令末尾追加 `--enable kafka`，即 `... harness_engineering_php_env start --enable kafka`；两者都要就写 `--enable clickhouse,kafka`。镜像里已装好 broker、kcat（看消息用）与 php 的 rdkafka 扩展——rdkafka 是 php-vibe-coding-frame 的 kafka 队列实现要用的客户端，装了不影响不用它的项目。
+
 ### 参数说明
 
 | 参数 | 说明 |
@@ -57,6 +61,7 @@ sudo docker run --rm -ti \
 | `-p 80:80` | 将容器的 80 端口（nginx）映射到本机 80 端口 |
 | `-p 3306:3306` | 将容器的 3306 端口（MariaDB）映射到本机，方便用本地客户端连接 |
 | `-p 8123:8123` | 将容器的 8123 端口（ClickHouse HTTP 接口）映射到本机，方便用本地客户端连接 |
+| `-p 9092:9092` | 将容器的 9092 端口（Kafka broker）映射到本机，方便用本地客户端连接 |
 | `-p 12345:12345` | 将容器的 12345 端口（chrome_do_action）映射到本机，方便用本地浏览器插件连接 |
 | `-p 12346:12346` | 将容器的 12346 端口（chrome_call_your_claude_code）映射到本机，方便用本地浏览器插件连接 |
 | `-v ~/.claude:/root/.claude` | （可选）映射本机 Claude CLI 配置目录，复用本机的对话历史和设置 |
@@ -66,4 +71,4 @@ sudo docker run --rm -ti \
 | `-e TIMEZONE` | 容器时区，默认 `Asia/Shanghai` |
 | `-e BEFORE_START_SHELL` | （可选）容器启动、服务进程启动前执行的初始化脚本，如准备目录、权限、服务启动前依赖的配置文件等 |
 | `-e AFTER_START_SHELL` | （可选）容器启动后执行的初始化脚本，如建表、导入测试数据等 |
-| `start --enable <组件名>` | 跟在启动命令末尾的 `start` 后面，启动默认不启动的可选组件，当前支持 `clickhouse`，如 `start --enable clickhouse`（可逗号分隔多个，为以后扩展预留） |
+| `start --enable <组件名>` | 跟在启动命令末尾的 `start` 后面，启动默认不启动的可选组件，当前支持 `clickhouse` 与 `kafka`，如 `start --enable kafka`（可逗号分隔多个，如 `--enable clickhouse,kafka`） |

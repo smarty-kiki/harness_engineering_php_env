@@ -31,4 +31,7 @@ chown mysql /var/log/mysql
 mkdir -p /var/log/clickhouse-server
 chown clickhouse:clickhouse /var/log/clickhouse-server
 
+# kafka 的 broker 日志目录（数据目录由 init 脚本在首次启动时建）
+mkdir -p /var/log/kafka
+
 mkdir /tmp/chrome
