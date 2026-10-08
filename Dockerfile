@@ -102,6 +102,10 @@ RUN cd /var/www/chrome_do_action/cli && npm install && npm run build && npm link
 RUN git clone https://github.com/smarty-kiki/chrome_call_your_claude_code /var/www/chrome_call_your_claude_code
 RUN cd /var/www/chrome_call_your_claude_code/server && npm install
 
+COPY ./config/nginx_harness.conf /etc/nginx/conf.d/harness.conf
+COPY ./config/mariadb_harness.cnf /etc/mysql/mariadb.conf.d/99-harness.cnf
+COPY ./config/redis_harness.conf /tmp/redis_harness.conf
+
 COPY ./shell/config_init.sh /tmp/config_init.sh
 RUN /bin/bash /tmp/config_init.sh
 

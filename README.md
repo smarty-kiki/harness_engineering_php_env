@@ -72,3 +72,17 @@ sudo docker run --rm -ti \
 | `-e BEFORE_START_SHELL` | （可选）容器启动、服务进程启动前执行的初始化脚本，如准备目录、权限、服务启动前依赖的配置文件等 |
 | `-e AFTER_START_SHELL` | （可选）容器启动后执行的初始化脚本，如建表、导入测试数据等 |
 | `start --enable <组件名>` | 跟在启动命令末尾的 `start` 后面，启动默认不启动的可选组件，当前支持 `clickhouse` 与 `kafka`，如 `start --enable kafka`（可逗号分隔多个，如 `--enable clickhouse,kafka`） |
+
+### 组件调参（2C4G 基准）
+
+按 **2 核 4G** 的机器做内存与并发预算（同容器里还常驻 php-fpm、5 个队列 worker、redis、nginx、两个 node 服务）：
+
+| 组件 | 调整 | 位置 |
+|------|------|------|
+| nginx | `worker_connections` 768 → 4096、`worker_rlimit_nofile` 16384；`client_max_body_size` 与 PHP 的 `post_max_size` 对齐 | `config_init.sh`、`config/nginx_harness.conf` |
+| php-fpm | www pool 5 → 12 个 worker，补 `max_requests` / `request_terminate_timeout` / `listen.backlog`；opcache 校验间隔 2s → 0 | `config_init.sh` |
+| MariaDB | 缓冲池 128M → 512M、MyISAM 与 Aria 缓存 128M → 16M、`max_connections` 151 → 80、SSD 刷盘口径 | `config/mariadb_harness.cnf` |
+| Redis | `maxmemory` 384mb + `volatile-lru`、lazyfree、`tcp-backlog` | `config/redis_harness.conf` |
+| beanstalkd | 没动：可调的只有 `-z`，早先已从默认 64K 提到 512K | — |
+
+> 另修了 redis / beanstalkd 的 init 脚本：`start-stop-daemon --exec` 认进程在 rosetta 包装层下永远匹配不上，导致 `service redis-server restart` 静默假成功、`service beanstalkd restart` 报 failed 且写坏 pidfile；改成 `--name` / `--startas` 后原生机器行为不变。细节见 `shell/config_init.sh`。
